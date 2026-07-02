@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Rewards Hub - Claim Now!</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(45deg, #ff00cc, #3333ff);
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        h1 {
+            font-size: 3em;
+            text-shadow: 0 0 20px rgba(255,255,255,0.8);
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 1.5em;
+            max-width: 600px;
+        }
+        button {
+            margin-top: 30px;
+            padding: 20px 40px;
+            font-size: 1.8em;
+            background: #ffcc00;
+            color: black;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: all 0.3s;
+        }
+        button:hover {
+            transform: scale(1.1);
+            background: #ffff00;
+        }
+        .warning {
+            position: fixed;
+            bottom: 20px;
+            font-size: 1.2em;
+            color: #ffff00;
+            text-shadow: 0 0 10px black;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎉 CONGRATULATIONS! 🎉</h1>
+    <p>You've won a FREE lifetime subscription to ALL streaming services + unlimited social media rewards!</p>
+    <p>Click the button below to claim your prizes instantly...</p>
+    
+    <button onclick="startAdChaos()">CLAIM MY FREE PRIZES NOW!</button>
+    
+    <div class="warning">⚠️ Your device may experience high popup activity ⚠️</div>
+
+    <script>
+        const adSites = [
+            { url: "https://www.netflix.com", title: "Netflix - Watch Now!" },
+            { url: "https://www.youtube.com", title: "YouTube Premium Free" },
+            { url: "https://www.instagram.com", title: "Instagram - Verified Account" },
+            { url: "https://www.facebook.com", title: "Facebook - Special Offer" },
+            { url: "https://twitter.com", title: "X (Twitter) - Blue Verified" },
+            { url: "https://www.tiktok.com", title: "TikTok - Unlimited Coins" },
+            { url: "https://www.disneyplus.com", title: "Disney+ Free Trial" },
+            { url: "https://www.hulu.com", title: "Hulu - No Ads Forever" },
+            { url: "https://www.spotify.com", title: "Spotify Premium" },
+            { url: "https://www.twitch.tv", title: "Twitch - Free Subs" }
+        ];
+
+        let popupCount = 0;
+        let chaosInterval = null;
+
+        function createRandomPopup() {
+            if (popupCount > 50) return; // Safety limit (browser will block anyway)
+            
+            const randomAd = adSites[Math.floor(Math.random() * adSites.length)];
+            
+            const width = 380 + Math.random() * 120;
+            const height = 280 + Math.random() * 100;
+            const left = Math.random() * (screen.width - width);
+            const top = Math.random() * (screen.height - height);
+            
+            const popup = window.open(
+                randomAd.url,
+                `ad_${popupCount}`,
+                `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`
+            );
+            
+            popupCount++;
+            
+            // If popup was blocked, show a fake one instead
+            if (!popup || popup.closed) {
+                showFakePopup(randomAd);
+            }
+        }
+
+        function showFakePopup(ad) {
+            const fake = document.createElement('div');
+            fake.style.position = 'fixed';
+            fake.style.left = Math.random() * (window.innerWidth - 400) + 'px';
+            fake.style.top = Math.random() * (window.innerHeight - 300) + 'px';
+            fake.style.width = '380px';
+            fake.style.height = '260px';
+            fake.style.background = 'white';
+            fake.style.color = 'black';
+            fake.style.border = '3px solid red';
+            fake.style.zIndex = '99999';
+            fake.style.boxShadow = '0 0 30px red';
+            fake.style.padding = '15px';
+            fake.style.fontFamily = 'Arial';
+            fake.style.overflow = 'hidden';
+            
+            fake.innerHTML = `
+                <div style="background: #ff0000; color: white; padding: 10px; text-align: center; font-weight: bold;">
+                    🚨 ${ad.title} 🚨
+                </div>
+                <div style="padding: 20px; text-align: center;">
+                    <h3 style="color: #ff0000;">Claim your reward before it expires!</h3>
+                    <p>This offer ends in <span style="color:red; font-weight:bold;">47 seconds</span></p>
+                    <button onclick="this.parentElement.parentElement.remove()" 
+                            style="background:#00cc00; color:white; padding:12px 30px; border:none; font-size:18px; cursor:pointer;">
+                        CLAIM NOW
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(fake);
+            
+            // Auto-remove after some time
+            setTimeout(() => {
+                if (fake.parentNode) fake.parentNode.removeChild(fake);
+            }, 8000);
+        }
+
+        function startAdChaos() {
+            const btn = document.querySelector('button');
+            btn.textContent = "CHAOS ENABLED 🔥";
+            btn.disabled = true;
+            
+            // Immediate burst
+            for (let i = 0; i < 8; i++) {
+                setTimeout(() => createRandomPopup(), i * 80);
+            }
+            
+            // Then continuous chaos
+            chaosInterval = setInterval(() => {
+                createRandomPopup();
+            }, 220);
+            
+            // Even more aggressive after 3 seconds
+            setTimeout(() => {
+                if (chaosInterval) {
+                    clearInterval(chaosInterval);
+                    chaosInterval = setInterval(() => {
+                        createRandomPopup();
+                        // Occasional double popup
+                        if (Math.random() > 0.7) createRandomPopup();
+                    }, 140);
+                }
+            }, 3000);
+            
+            // Background title spam
+            let titleInterval = setInterval(() => {
+                document.title = ["FREE REWARDS!", "CLAIM NOW!!", "YOU WON!!!", "DON'T MISS OUT"][Math.floor(Math.random()*4)];
+            }, 800);
+        }
+
+        // Bonus: Keyboard spam
+        document.addEventListener('keydown', () => {
+            if (chaosInterval) {
+                for (let i = 0; i < 3; i++) {
+                    setTimeout(() => createRandomPopup(), i * 50);
+                }
+            }
+        });
+
+        // Warn the user
+        console.log("%cAd Chaos website activated. Close this tab if you value your sanity.", "color: red; font-size: 20px");
+    </script>
+</body>
+</html>
