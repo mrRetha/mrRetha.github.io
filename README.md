@@ -1,3 +1,2 @@
-# mrRetha.github.io
-This is my website
-Have fun
+Rethabile Sobane Portfolio
+
